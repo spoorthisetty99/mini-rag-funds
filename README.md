@@ -60,9 +60,9 @@ Caching implemented for embeddings to reduce recomputation time.
 ---
 # Trade-off
 
--A lightweight model (all-MiniLM-L6-v2) was chosen for faster inference, trading off a bit of accuracy compared to larger models. 
--FAISS was used for simple in-memory indexing, which works well for small datasets but needs serialization for persistence.  
--Converting numeric data into text simplified the embedding process but reduced the ability to perform precise numerical comparisons.
+-A lightweight model (all-MiniLM-L6-v2) was chosen for faster inference, trading off a bit of accuracy compared to larger models. <br>
+-FAISS was used for simple in-memory indexing, which works well for small datasets but needs serialization for persistence.  <br>
+-Converting numeric data into text simplified the embedding process but reduced the ability to perform precise numerical comparisons.<br>
 
 # Assumptions
 
