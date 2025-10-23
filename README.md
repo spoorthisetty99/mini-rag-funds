@@ -1,10 +1,10 @@
-# 🧠 Mini RAG for Financial Data
+# Mini RAG for Financial Data
 
 This project is a **Retrieval-Augmented Generation (RAG)** prototype that can answer both **financial FAQs** and **quantitative fund-performance queries** using a hybrid retrieval pipeline.
 
 ---
 
-## 🚀 Features
+## Features
 - Ingests **fund performance data** (`funds.csv`) and **financial FAQs** (`faqs.csv`)
 - Creates **semantic embeddings** using `sentence-transformers`
 - Supports both **lexical** (TF-IDF / BM25) and **semantic** (FAISS) retrieval
@@ -13,7 +13,7 @@ This project is a **Retrieval-Augmented Generation (RAG)** prototype that can an
 
 ---
 
-```## 📂 Folder Structure
+```## Folder Structure
 mini-rag-funds/
 ├── data/ 
 ├── src/ # Source code
@@ -25,7 +25,7 @@ mini-rag-funds/
 
 ---
 
-## ⚙️ Setup Instructions
+## Setup Instructions
 
 ### 1. Clone the repo
 ```bash
@@ -49,11 +49,21 @@ python -m nltk.downloader punkt
 ```
 5. Run the API Server
 ```
-python -m uvicorn src.api:app --host 127.0.0.1 --port 8000
-```
-Server URL: http://127.0.0.1:8000
+CUDA_VISIBLE_DEVICES="" python -m uvicorn src.api:app --host 127.0.0.1 --port 8000
 
+```
 Interactive API docs: http://127.0.0.1:8000/docs
+
+<img width="750" height="750" alt="Screenshot from 2025-10-23 15-21-03" src="https://github.com/user-attachments/assets/4a2b774f-de11-4ad9-ab60-3b84685ac6a9" />
+
+To use the API and enter your own queries in JSON format, you need to click the **`Try it out`** button in the Swagger UI panel. This action enables the fields in the request section, so you can enter your JSON query parameters, such as a financial question, the retrieval type, and the number of results to return. After filling in your details, you can then execute the request and view the live response from the RAG backend.<br>
+
+<img width="750" height="750" alt="Screenshot from 2025-10-23 15-36-01" src="https://github.com/user-attachments/assets/45b998b5-ce44-40f9-8092-585e9c48f9b6" />
+Once your query is ready, simply click the **`Execute`** button below to send your request and get a response from the API. This allows you to interactively test different queries and view live results immediately.<br>
+
+
+<img width="750" height="750" alt="Screenshot from 2025-10-23 15-37-57" src="https://github.com/user-attachments/assets/ccf1db41-1c1b-49cd-9794-4b068b8d07f8" /><br>
+Once you click **`Execute`**, your results will be displayed in the **`Response body`** section.<br>
 
 Example Queries
 ```
@@ -71,4 +81,11 @@ example Queries:
   "retrieval": "semantic",
   "topk": 5
 }
+
+{
+  "query": "What is an index fund?",
+  "retrieval": "lexical",
+  "topk": 2
+}
+
 ```
