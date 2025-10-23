@@ -74,18 +74,39 @@ Example Queries
 | `Which funds have the lowest volatility?`                     | semantic  | Rank by `volatility` |
 | `What is an index fund?`                                      | lexical   | FAQ text retrieval   |
 ```
-example Queries:
+example Queries Lexical:
 ```
 {
-  "query": "Which funds have the best Sharpe ratio in the last 3 years?",
-  "retrieval": "semantic",
-  "topk": 5
+  "lexical_queries": [
+    {"query": "What is a mutual fund?", "retrieval": "lexical", "topk": 4},
+    {"query": "Define index fund", "retrieval": "lexical", "topk": 4},
+    {"query": "Explain SIP", "retrieval": "lexical", "topk": 4},
+    {"query": "What is CAGR?", "retrieval": "lexical", "topk": 4},
+    {"query": "What is NAV in mutual funds?", "retrieval": "lexical", "topk": 4},
+    {"query": "What is a balanced fund?", "retrieval": "lexical", "topk": 4},
+    {"query": "What is an equity fund?", "retrieval": "lexical", "topk": 4},
+    {"query": "What is diversification in mutual funds?", "retrieval": "lexical", "topk": 4},
+    {"query": "What is an expense ratio?", "retrieval": "lexical", "topk": 4},
+    {"query": "What are debt funds?", "retrieval": "lexical", "topk": 4}
+  ]
+}
+```
+example Queries Semantic:
+```
+{
+  "semantic_queries": [
+    {"query": "Show me top performing equity funds", "retrieval": "semantic", "topk": 4},
+    {"query": "Funds with high 5-year returns", "retrieval": "semantic", "topk": 4},
+    {"query": "Low risk investment options", "retrieval": "semantic", "topk": 4},
+    {"query": "Funds with balanced allocation between debt and equity", "retrieval": "semantic", "topk": 4},
+    {"query": "Best index fund for long term investment", "retrieval": "semantic", "topk": 4},
+    {"query": "Funds suitable for tax saving", "retrieval": "semantic", "topk": 4},
+    {"query": "Schemes focused on small cap companies", "retrieval": "semantic", "topk": 4},
+    {"query": "Funds investing in government securities", "retrieval": "semantic", "topk": 4},
+    {"query": "Best performing hybrid funds", "retrieval": "semantic", "topk": 4},
+    {"query": "Mutual funds ideal for short term goals", "retrieval": "semantic", "topk": 4}
+  ]
 }
 
-{
-  "query": "What is an index fund?",
-  "retrieval": "lexical",
-  "topk": 2
-}
 
 ```
