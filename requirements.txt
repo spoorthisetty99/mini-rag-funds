@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+pandas
+numpy
+sentence-transformers
+faiss-cpu
+scikit-learn
+rank_bm25
+python-multipart
+tqdm
+requests         # if calling external LLM APIs
