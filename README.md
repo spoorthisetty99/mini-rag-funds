@@ -65,8 +65,10 @@ Example Queries
 | `What is an index fund?`                                      | lexical   | FAQ text retrieval   |
 ```
 example Queries:
+```
 {
   "query": "Which funds have the best Sharpe ratio in the last 3 years?",
   "retrieval": "semantic",
   "topk": 5
 }
+```
