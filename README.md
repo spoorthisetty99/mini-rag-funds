@@ -69,6 +69,7 @@ Caching implemented for embeddings to reduce recomputation time.
 -Query intent is limited to factual retrieval and ranking — not deep reasoning.
 
 
+# DEPLOYMENT INSTRUCTIONS
 
 ## Folder Structure
 ```
