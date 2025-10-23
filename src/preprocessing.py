@@ -1,68 +1,99 @@
+# src/preprocessing.py
 import pandas as pd
-import json
 from pathlib import Path
+import numpy as np
+import uuid
 
-def load_and_prepare(faq_path, funds_path):
-    faqs = pd.read_csv(faq_path)   # expect columns like 'question','answer','id' or combine
+def _make_id(prefix: str, i: int):
+    return f"{prefix}-{i}"
 
-    # -----------------------
-    # Load funds and normalize column names
-    # -----------------------
-    funds = pd.read_csv(funds_path)
+def load_and_prepare(faq_path: str, funds_path: str):
+    """
+    Loads faqs.csv and funds.csv and returns:
+      - corpus_df: DataFrame with columns ['id', 'text', 'metadata']
+        metadata is a dict containing at least: {'source_file': <str>, 'origin_id': <original row id>}
+      - funds_df: original funds dataframe (kept for metric ranking)
+    """
+    faq_path = Path(faq_path)
+    funds_path = Path(funds_path)
 
-    # map common CSV column names to the names the rest of the code expects
-    rename_map = {
-        'cagr_3yr (%)': '3yr_cagr',     # "cagr_3yr (%)" -> "3yr_cagr"
-        'cagr_1yr (%)': '1yr_cagr',
-        'cagr_5yr (%)': '5yr_cagr',
-        'volatility (%)': 'volatility', # remove parentheses
-        'sharpe_ratio': 'sharpe_3yr',   # if your CSV has a generic sharpe, map to sharpe_3yr
-        # add other mappings if needed
-    }
-    # apply rename only for columns that exist in the CSV
-    existing_map = {k: v for k, v in rename_map.items() if k in funds.columns}
-    if existing_map:
-        funds = funds.rename(columns=existing_map)
+    # load FAQs
+    faqs = pd.read_csv(str(faq_path))
+    # normalize columns that may exist
+    if "question" in faqs.columns and "answer" in faqs.columns:
+        faqs["text"] = faqs["question"].fillna("") + ". " + faqs["answer"].fillna("")
+    elif "text" in faqs.columns:
+        faqs["text"] = faqs["text"].fillna("")
+    else:
+        # if structure unknown, coalesce all columns into a text field
+        faqs["text"] = faqs.fillna("").astype(str).agg(" ".join, axis=1)
 
-    # keep original data safe (optional)
-    # funds_orig = funds.copy()
-
-    corpus_rows = []
-    # FAQs -> text
-    for i, r in faqs.iterrows():
-        text = (str(r.get('question','')) + '\n' + str(r.get('answer',''))).strip()
-        corpus_rows.append({
-            'id': f'faq_{i}',
-            'source_type': 'faq',
-            'text': text,
-            'metadata': {'raw': r.to_dict()}
+    # create corpus rows for faqs
+    faq_rows = []
+    for i, row in faqs.reset_index(drop=True).iterrows():
+        origin_id = row.get("id", i)
+        uid = _make_id("faq", i)
+        faq_rows.append({
+            "id": uid,
+            "text": str(row["text"]),
+            "metadata": {
+                "source_file": faq_path.name,
+                "origin_id": origin_id,
+                # you can add more contextual fields here if desired (e.g., 'question' or 'title')
+            }
         })
 
-    # Funds -> textualized metrics + structured storage
-    for i, r in funds.iterrows():
-        name = r.get('fund_name') or r.get('Fund') or f"Fund_{i}"
+    # load Funds
+    funds = pd.read_csv(str(funds_path))
+    # ensure some numeric columns exist (CAGR, sharpe, volatility) - don't enforce names but try common variants
+    # Build textual description for each fund row
+    fund_rows = []
+    for i, row in funds.reset_index(drop=True).iterrows():
+        origin_id = row.get("id", i)
+        fund_name = row.get("fund_name") or row.get("name") or row.get("fund") or ""
+        # try to collect a few numeric metrics if present
         metrics = []
-        # add common metrics if present
-        for col in ['1yr_cagr','3yr_cagr','5yr_cagr','volatility','sharpe_3yr','expense_ratio']:
-            if col in r and pd.notnull(r[col]):
-                metrics.append(f"{col}:{r[col]}")
-        desc = r.get('description','')
-        text_parts = [f"{name} | " + " | ".join(metrics)]
-        if desc:
-            text_parts.append("desc: " + str(desc))
-        text = " ".join(text_parts)
-        corpus_rows.append({
-            'id': f'fund_{i}',
-            'source_type': 'fund',
-            'text': text,
-            'metadata': {'fund_name': name, 'raw': r.to_dict()}
+        # common metric column patterns - adjust as needed for your dataset
+        for col in ["3yr_cagr", "3_year_cagr", "cagr_3y", "3yr_return", "three_year_return"]:
+            if col in funds.columns:
+                metrics.append(f"3yr_CAGR = {row[col]}")
+                break
+        for col in ["sharpe_3yr", "3yr_sharpe", "sharpe"]:
+            if col in funds.columns:
+                metrics.append(f"Sharpe_3yr = {row[col]}")
+                break
+        for col in ["volatility_1yr", "1yr_volatility", "volatility"]:
+            if col in funds.columns:
+                metrics.append(f"Volatility_1yr = {row[col]}")
+                break
+
+        desc_parts = [f"Fund: {fund_name}"] if fund_name else []
+        if len(metrics):
+            desc_parts += metrics
+        # fallback: concat non-empty string fields
+        if not desc_parts:
+            # take first 5 columns as textual fallback
+            text_fallback = " ".join([str(row[c]) for c in funds.columns[:5]])
+            desc = f"{fund_name} {text_fallback}"
+        else:
+            desc = ". ".join(desc_parts)
+
+        uid = _make_id("fund", i)
+        fund_rows.append({
+            "id": uid,
+            "text": desc,
+            "metadata": {
+                "source_file": funds_path.name,
+                "origin_id": origin_id,
+                "fund_name": fund_name
+            }
         })
 
-    corpus_df = pd.DataFrame(corpus_rows)
-    return corpus_df, funds
+    # combine into corpus
+    combined = faq_rows + fund_rows
+    corpus_df = pd.DataFrame(combined)
+    # ensure columns exist
+    corpus_df = corpus_df[["id", "text", "metadata"]]
 
-if __name__=='__main__':
-    corpus_df, funds_df = load_and_prepare('/mnt/data/faqs.csv','/mnt/data/funds.csv')
-    corpus_df.to_parquet('data/corpus.parquet', index=False)
-    funds_df.to_parquet('data/funds_parquet.parquet', index=False)
-    print("Saved prepared corpus and funds.")
+    # return corpus and original funds df (for metric ranking)
+    return corpus_df, funds
