@@ -15,9 +15,9 @@ This project is a **Retrieval-Augmented Generation (RAG)** prototype that can an
 
 ## 📂 Folder Structure
 mini-rag-funds/
-├── data/ # Input CSVs
+├── data/ 
 ├── src/ # Source code
-├── cache/ # Cached embeddings (optional)
+├── cache/ # Cached embeddings 
 ├── requirements.txt
 ├── README.md
 └── .gitignore
