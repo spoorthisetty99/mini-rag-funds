@@ -21,7 +21,7 @@ The system is built as a Mini Retrieval-Augmented Generation (RAG) pipeline with
 ---
 # Architecture Overview
 
-## Data Preparation
+### Data Preparation
 
 Load FAQ CSV and Fund Performance CSV.
 
@@ -30,7 +30,7 @@ Convert numerical data into text-like descriptions, e.g.
 
 Store all text data in a unified corpus.
 
-## Embedding & Indexing
+### Embedding & Indexing
 
 Semantic Search:
 Uses Sentence Transformers to create vector embeddings.
@@ -41,7 +41,7 @@ Implemented using TF-IDF  for exact keyword-based retrieval.
 
 A retrieval flag allows switching between lexical and semantic modes.
 
-## Query Handling
+### Query Handling
 
 Accepts user query via FastAPI endpoint:
 {"query": "best Sharpe ratio funds", "mode": "semantic"}
@@ -51,7 +51,7 @@ Retrieves top relevant FAQs and fund entries.
 Combines and formats results into a structured JSON
 
 
-## Interface / Deployment
+### Interface / Deployment
 
 Exposed through a FastAPI service.
 
