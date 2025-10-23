@@ -2,6 +2,17 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.preprocessing import minmax_scale
 
+
+from nltk.tokenize import word_tokenize
+import nltk
+
+# Ensure required tokenizers are available
+nltk.download("punkt", quiet=True)
+nltk.download("punkt_tab", quiet=True)
+
+
+
+
 class Retriever:
     def __init__(self, corpus_df, embeddings, tfidf_vec=None, tfidf_matrix=None, bm25=None, faiss_index=None, model_name='all-MiniLM-L6-v2'):
         self.corpus_df = corpus_df
@@ -24,6 +35,7 @@ class Retriever:
                             'text': self.corpus_df.iloc[idx]['text'],
                             'metadata': self.corpus_df.iloc[idx]['metadata']})
         return results
+    
 
     def lexical_search(self, query, topk=5):
         # use bm25 if available
