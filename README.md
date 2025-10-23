@@ -65,16 +65,7 @@ Once your query is ready, simply click the **`Execute`** button below to send yo
 <img width="750" height="750" alt="Screenshot from 2025-10-23 15-37-57" src="https://github.com/user-attachments/assets/ccf1db41-1c1b-49cd-9794-4b068b8d07f8" /><br>
 Once you click **`Execute`**, your results will be displayed in the **`Response body`** section.<br>
 
-Example Queries
-```
-| Query                                                         | Retrieval | Description          |
-| ------------------------------------------------------------- | --------- | -------------------- |
-| `Which funds have the best Sharpe ratio in the last 3 years?` | semantic  | Rank by `sharpe_3yr` |
-| `Top funds by 3-year CAGR`                                    | semantic  | Rank by `3yr_cagr`   |
-| `Which funds have the lowest volatility?`                     | semantic  | Rank by `volatility` |
-| `What is an index fund?`                                      | lexical   | FAQ text retrieval   |
-```
-example Queries Lexical:
+Example Queries Lexical:
 ```
 {
   "lexical_queries": [
@@ -91,7 +82,7 @@ example Queries Lexical:
   ]
 }
 ```
-example Queries Semantic:
+Example Queries Semantic:
 ```
 {
   "semantic_queries": [
