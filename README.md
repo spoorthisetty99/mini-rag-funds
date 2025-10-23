@@ -98,6 +98,25 @@ Example Queries Semantic:
     {"query": "Mutual funds ideal for short term goals", "retrieval": "semantic", "topk": 4}
   ]
 }
+```
+Example Questies Hybrid
+```
+{
+  "hybrid_queries": [
+    {"query": "Top 5 funds with the highest 3-year Sharpe ratio", "retrieval": "hybrid", "topk": 6},
+    {"query": "Funds with stable returns and low volatility", "retrieval": "hybrid", "topk": 6},
+    {"query": "Which index funds track the Nifty 50 and perform well", "retrieval": "hybrid"  "topk": 6},
+    {"query": "Show best performing debt-oriented funds", "retrieval": "hybrid", "topk": 6},
+    {"query": "Which funds have the best 5-year CAGR with Sharpe ratio above 1", "retrieval": "hybrid",  "topk": 6},
+    {"query": "Low expense ratio funds suitable for long term investment", "retrieval": "hybrid", "topk": 6},
+    {"query": "Funds suitable for conservative investors seeking steady returns", "retrieval": "hybrid","topk": 6},
+    {"query": "Funds offering best SIP performance over 3 years", "retrieval": "hybrid", "topk": 6},
+    {"query": "Which funds invest primarily in government securities", "retrieval": "hybrid", "topk": 6},
+    {"query": "Tax saving mutual funds with high long term returns", "retrieval": "hybrid","topk": 6},
+    {"query": "Hybrid funds balancing equity and debt exposure", "retrieval": "hybrid","topk": 6},
+
+  ]
+}
 
 
 ```
