@@ -12,8 +12,66 @@ This project is a **Retrieval-Augmented Generation (RAG)** prototype that can an
 - Exposes a **FastAPI endpoint** for queries
 
 ---
+## Overall Design
 
-```## Folder Structure
+The system is built as a Mini Retrieval-Augmented Generation (RAG) pipeline with two primary data sources —
+(a) textual FAQs and (b) numerical fund performance data.
+
+
+---
+# Architecture Overview
+
+## Data Preparation
+
+Load FAQ CSV and Fund Performance CSV.
+
+Convert numerical data into text-like descriptions, e.g.
+"Fund A has 3-year CAGR of 12%, volatility of 8%, and Sharpe ratio of 1.2."
+
+Store all text data in a unified corpus.
+
+## Embedding & Indexing
+
+Semantic Search:
+Uses Sentence Transformers to create vector embeddings.
+FAISS is used for vector storage and retrieval.
+
+Lexical Search:
+Implemented using TF-IDF  for exact keyword-based retrieval.
+
+A retrieval flag allows switching between lexical and semantic modes.
+
+## Query Handling
+
+Accepts user query via FastAPI endpoint:
+{"query": "best Sharpe ratio funds", "mode": "semantic"}
+
+Retrieves top relevant FAQs and fund entries.
+
+Combines and formats results into a structured JSON
+
+
+## Interface / Deployment
+
+Exposed through a FastAPI service.
+
+Caching implemented for embeddings to reduce recomputation time.
+
+---
+# Trade-off
+
+A lightweight model (all-MiniLM-L6-v2) was chosen for faster inference, trading off a bit of accuracy compared to larger models. 
+FAISS was used for simple in-memory indexing, which works well for small datasets but needs serialization for persistence.  
+Converting numeric data into text simplified the embedding process but reduced the ability to perform precise numerical comparisons.
+
+# Assumptions
+
+Query intent is limited to factual retrieval and ranking — not deep reasoning.
+
+
+
+## Folder Structure
+```
 mini-rag-funds/
 ├── data/ 
 ├── src/ # Source code
