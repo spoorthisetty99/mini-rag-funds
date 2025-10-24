@@ -6,11 +6,14 @@ def parse_metric_query(query):
     if 'sharpe' in q:
         period = '3yr' if '3' in q or '3yr' in q or 'three' in q else None
         return {'metric':'sharpe_3yr' if period=='3yr' else 'sharpe'}
-    # add rules for cagr, volatility, expense_ratio, etc.
+    # add rules for cagr, volatility, sharpe (Funds.csv ).
     if 'cagr' in q or 'return' in q:
         if '3' in q: return {'metric':'3yr_cagr'}
         if '5' in q: return {'metric':'5yr_cagr'}
         return {'metric':'1yr_cagr'}
+
+    if 'volatility' in q or 'risk' in q or 'standard deviation' in q or 'fluctuation' in q:
+        return {'metric': 'volatility (%)'}
     return None
 
 def rank_funds(funds_df, metric, topk=5, ascending=False):
